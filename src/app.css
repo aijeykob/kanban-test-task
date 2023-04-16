@@ -1,0 +1,41 @@
+.error-message {
+    color: #ff3333;
+    margin-top: 8px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: calc(300px * 3 + 64px);
+    margin: 0 auto;
+}
+
+.wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.wrapper-inner {
+    display: flex;
+    justify-content: center;
+    min-width: calc(300px * 3 + 64px);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.repo-info-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.repo-info {
+    color: #4e64cd;
+}
+
+.star-info {
+    color: black;
+}
