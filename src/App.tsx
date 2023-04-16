@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
-
-import {fetchIssues, fetchRepoInfo} from "./api";
-import {Repo} from "./types";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchIssues} from "./api";
+import {toast} from "react-toastify";
 import RepoForm from "components/Header";
 import RepoInfo from "components/RepoInfo";
 import IssueBoard from "components/IssueBoard";
 
 import "./app.css";
+import {RootState} from "./store/store";
+import {fetchRepoInfoRequest} from "./store/actions/actions";
 
 const initialColumns = {
     toDo: {name: "To do", items: []},
@@ -15,11 +17,14 @@ const initialColumns = {
 };
 
 function App() {
+    const dispatch = useDispatch();
     const [repoUrl, setRepoUrl] = useState("");
     const [currentRepoUrl, setCurrentRepoUrl] = useState("");
     const [columns, setColumns] = useState(initialColumns);
 
-    const [repoData, setRepoData] = useState<Repo | null>(null);
+    const repoData = useSelector((state: RootState) => state.repo.data);
+    const repoError = useSelector((state: RootState) => state.repo.error);
+
     useEffect(() => {
         if (currentRepoUrl && JSON.stringify(initialColumns) !== JSON.stringify(columns)) {
             const issueBoardState = JSON.parse(localStorage.getItem("issueBoardState")) || {};
@@ -27,6 +32,12 @@ function App() {
             localStorage.setItem("issueBoardState", JSON.stringify(issueBoardState));
         }
     }, [columns, currentRepoUrl]);
+
+    useEffect(() => {
+        if (repoError) {
+            toast.error(`Error: ${repoError}`);
+        }
+    }, [repoError]);
 
     useEffect(() => {
         async function fetchData() {
@@ -54,22 +65,12 @@ function App() {
                 };
                 setColumns(newTaskStatus);
             } catch (error) {
-                setRepoData(null);
-                console.error("Error fetching issues:", error);
-            }
-        }
-
-        async function fetchInfo() {
-            try {
-                const repoInfo = await fetchRepoInfo(currentRepoUrl);
-                setRepoData(repoInfo);
-            } catch (error) {
                 console.error("Error fetching issues:", error);
             }
         }
 
         const issueBoardState = JSON.parse(localStorage.getItem("issueBoardState")) || {};
-        fetchInfo();
+        if (currentRepoUrl) dispatch(fetchRepoInfoRequest(currentRepoUrl));
         if (
             currentRepoUrl &&
             issueBoardState[currentRepoUrl] &&
@@ -81,7 +82,7 @@ function App() {
                 fetchData();
             }
         }
-    }, [currentRepoUrl]);
+    }, [currentRepoUrl, dispatch]);
 
     const loadIssues = () => {
         if (repoUrl !== currentRepoUrl) {

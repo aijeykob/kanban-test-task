@@ -21,7 +21,7 @@ const RepoForm: React.FC<RepoFormProps> = ({loadIssues, handleUrlChange}) => {
 
     return (
         <Form style={{flex: 1}}>
-            <Form.Item name="search">
+            <Form.Item name="search" style={{marginBottom: 0}}>
                 <Row gutter={12}>
                     <Col span={18}>
                         <Form.Item name="search" noStyle rules={[{validator: validateUrl}]}>
