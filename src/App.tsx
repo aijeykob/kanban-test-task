@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchIssues} from "./api";
 import {toast} from "react-toastify";
 import RepoForm from "components/Header";
 import RepoInfo from "components/RepoInfo";
@@ -8,7 +7,7 @@ import IssueBoard from "components/IssueBoard";
 
 import "./app.css";
 import {RootState} from "./store/store";
-import {fetchRepoInfoRequest} from "./store/actions/actions";
+import {fetchIssuesRequest, fetchRepoInfoRequest} from "./store/actions/actions";
 
 const initialColumns = {
     toDo: {name: "To do", items: []},
@@ -24,6 +23,7 @@ function App() {
 
     const repoData = useSelector((state: RootState) => state.repo.data);
     const repoError = useSelector((state: RootState) => state.repo.error);
+    const issuesData = useSelector((state: RootState) => state.issues.data);
 
     useEffect(() => {
         if (currentRepoUrl && JSON.stringify(initialColumns) !== JSON.stringify(columns)) {
@@ -40,37 +40,38 @@ function App() {
     }, [repoError]);
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const issues = await fetchIssues(currentRepoUrl);
-                const newTaskStatus = {
-                    toDo: {
-                        name: "To do",
-                        items: issues
-                            .filter((issue) => issue.state === "open" && !issue.assignee)
-                            .map((issue) => ({...issue, id: String(issue.id)}))
-                    },
-                    inProgress: {
-                        name: "In Progress",
-                        items: issues
-                            .filter((issue) => issue.state === "open" && issue.assignee)
-                            .map((issue) => ({...issue, id: String(issue.id)}))
-                    },
-                    done: {
-                        name: "Done",
-                        items: issues
-                            .filter((issue) => issue.state === "closed")
-                            .map((issue) => ({...issue, id: String(issue.id)}))
-                    }
-                };
-                setColumns(newTaskStatus);
-            } catch (error) {
-                console.error("Error fetching issues:", error);
-            }
+        if (issuesData) {
+            const newTaskStatus = {
+                toDo: {
+                    name: "To do",
+                    items: issuesData
+                        .filter((issue) => issue.state === "open" && !issue.assignee)
+                        .map((issue) => ({...issue, id: String(issue.id)}))
+                },
+                inProgress: {
+                    name: "In Progress",
+                    items: issuesData
+                        .filter((issue) => issue.state === "open" && issue.assignee)
+                        .map((issue) => ({...issue, id: String(issue.id)}))
+                },
+                done: {
+                    name: "Done",
+                    items: issuesData
+                        .filter((issue) => issue.state === "closed")
+                        .map((issue) => ({...issue, id: String(issue.id)}))
+                }
+            };
+            setColumns(newTaskStatus);
+        }
+    }, [issuesData]);
+
+    useEffect(() => {
+        if (currentRepoUrl) {
+            dispatch(fetchRepoInfoRequest(currentRepoUrl));
         }
 
         const issueBoardState = JSON.parse(localStorage.getItem("issueBoardState")) || {};
-        if (currentRepoUrl) dispatch(fetchRepoInfoRequest(currentRepoUrl));
+
         if (
             currentRepoUrl &&
             issueBoardState[currentRepoUrl] &&
@@ -79,7 +80,7 @@ function App() {
             setColumns(issueBoardState[currentRepoUrl]);
         } else {
             if (currentRepoUrl) {
-                fetchData();
+                dispatch(fetchIssuesRequest(currentRepoUrl));
             }
         }
     }, [currentRepoUrl, dispatch]);

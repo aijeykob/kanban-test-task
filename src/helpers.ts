@@ -6,3 +6,5 @@ export function getTimeDifferenceString(currentDate, createdAt) {
 }
 
 export const urlPattern = /^(https?:\/\/)?(www\.)?(github\.com)\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)\/?$/;
+
+export const githubApiBaseUrl = "https://api.github.com/repos/";
