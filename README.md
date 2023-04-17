@@ -13,3 +13,5 @@ You may also see any lint errors in the console.
 `npm run cypress:run`
 
 Make sure to start the development server by running the command `npm run dev` before executing the tests.
+
+### Developed on node version 16.13.2
