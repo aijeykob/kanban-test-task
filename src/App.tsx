@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import RepoForm from "components/Header";
@@ -8,14 +8,10 @@ import IssueBoard from "components/IssueBoard";
 import "./app.css";
 import {RootState} from "./store/store";
 import {fetchIssuesRequest, fetchRepoInfoRequest} from "./store/actions/actions";
+import {initialColumns} from "./helpers";
+import {Issue} from "./types";
 
-const initialColumns = {
-    toDo: {name: "To do", items: []},
-    inProgress: {name: "In Progress", items: []},
-    done: {name: "Done", items: []}
-};
-
-function App() {
+function App(): JSX.Element {
     const dispatch = useDispatch();
     const [repoUrl, setRepoUrl] = useState("");
     const [currentRepoUrl, setCurrentRepoUrl] = useState("");
@@ -45,20 +41,20 @@ function App() {
                 toDo: {
                     name: "To do",
                     items: issuesData
-                        .filter((issue) => issue.state === "open" && !issue.assignee)
-                        .map((issue) => ({...issue, id: String(issue.id)}))
+                        .filter((issue: Issue) => issue.state === "open" && !issue.assignee)
+                        .map((issue: Issue) => ({...issue, id: String(issue.id)}))
                 },
                 inProgress: {
                     name: "In Progress",
                     items: issuesData
-                        .filter((issue) => issue.state === "open" && issue.assignee)
-                        .map((issue) => ({...issue, id: String(issue.id)}))
+                        .filter((issue: Issue) => issue.state === "open" && issue.assignee)
+                        .map((issue: Issue) => ({...issue, id: String(issue.id)}))
                 },
                 done: {
                     name: "Done",
                     items: issuesData
-                        .filter((issue) => issue.state === "closed")
-                        .map((issue) => ({...issue, id: String(issue.id)}))
+                        .filter((issue: Issue) => issue.state === "closed")
+                        .map((issue: Issue) => ({...issue, id: String(issue.id)}))
                 }
             };
             setColumns(newTaskStatus);
@@ -85,20 +81,20 @@ function App() {
         }
     }, [currentRepoUrl, dispatch]);
 
-    const loadIssues = () => {
+    const loadIssues = useCallback(() => {
         if (repoUrl !== currentRepoUrl) {
             setColumns(initialColumns);
         }
         setCurrentRepoUrl(repoUrl);
-    };
+    }, [repoUrl, currentRepoUrl]);
 
-    const handleUrlChange = (e) => {
+    const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         let url = e.target.value.trim();
         if (url.endsWith("/")) {
             url = url.slice(0, -1);
         }
         setRepoUrl(url);
-    };
+    }, []);
 
     return (
         <div>

@@ -8,3 +8,9 @@ export function getTimeDifferenceString(currentDate, createdAt) {
 export const urlPattern = /^(https?:\/\/)?(www\.)?(github\.com)\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)\/?$/;
 
 export const githubApiBaseUrl = "https://api.github.com/repos/";
+
+export const initialColumns = {
+    toDo: {name: "To do", items: []},
+    inProgress: {name: "In Progress", items: []},
+    done: {name: "Done", items: []}
+};

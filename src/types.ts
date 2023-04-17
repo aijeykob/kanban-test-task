@@ -33,3 +33,7 @@ export interface Repo {
     stargazers_count: number;
     html_url: string;
 }
+
+export interface IssueBoardState {
+    [repoUrl: string]: Column[];
+}
