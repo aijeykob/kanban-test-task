@@ -18,6 +18,7 @@ const IssueItem: React.FC<IssueItemProps> = React.memo(function IssueItem({item,
         <Draggable key={item.id} draggableId={item.id} index={index}>
             {(provided, snapshot) => (
                 <div
+                    data-cy="issue-item"
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}

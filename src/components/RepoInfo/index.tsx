@@ -9,7 +9,7 @@ const RepoInfo: React.FC<RepoInfoProps> = ({repoData}) => {
     const repoUrl = repoData && repoData.html_url;
     const ownerUrl = repoData && repoData.owner && repoData.owner.html_url;
     return (
-        <div className="repo-info">
+        <div className="repo-info" data-cy="repo-info">
             {repoData && (
                 <>
                     {ownerUrl && (

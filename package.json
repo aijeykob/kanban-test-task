@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "webpack-cli serve --mode=development --env development --open --hot",
     "build": "webpack --mode=production --env production --progress",
+    "cypress:run": "cypress run",
+    "cypress:open": "cypress open",
     "lint": "eslint './src/**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint './src/**/*.{ts,tsx,js,jsx}' --fix"
   },
@@ -29,6 +31,8 @@
     "@typescript-eslint/eslint-plugin": "5.58.0",
     "@typescript-eslint/parser": "5.58.0",
     "css-loader": "^6.7.3",
+    "cypress": "^12.9.0",
+    "cypress-axe": "^1.4.0",
     "eslint": "8.38.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",
